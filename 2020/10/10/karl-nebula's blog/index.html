@@ -1,156 +1,40 @@
-<!DOCTYPE html>
-<html>
-  <!-- Html Head Tag-->
-  <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="John Doe">
-  <!-- Open Graph Data -->
-  <meta property="og:title" content="Hexo"/>
-  <meta property="og:description" content="" />
-  <meta property="og:site_name" content="Hexo"/>
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="http://example.com"/>
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
+extends includes/layout.pug
 
-  <!-- Site Title -->
-  <title>Hexo</title>
-
-  <!-- Bootstrap CSS -->
-  
-<link rel="stylesheet" href="/css/bootstrap.min.css">
-
-  <!-- Custom CSS -->
-  
-  
-<link rel="stylesheet" href="/css/style.light.css">
-
-
-  <!-- Google Analytics -->
-  
-
-<meta name="generator" content="Hexo 5.2.0"></head>
-
-  <body>
-    <!-- Page Header -->
-
-
-<header class="site-header header-background" style="background-image: url(/img/default-banner-dark.jpg)">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div class="page-title with-background-image">
-          <p class="title">Untitled Post</p>
-          <p class="subtitle"></p>
-        </div>
-        <div class="site-menu with-background-image">
-          <ul>
-            
-              <li>
-                <a href="/">
-                  
-                  Home
-                  
-                </a>
-              </li>
-            
-              <li>
-                <a href="/archives">
-                  
-                  Archives
-                  
-                </a>
-              </li>
-            
-              <li>
-                <a href="https://github.com/<your-github-username>">
-                  
-                  Github
-                  
-                </a>
-              </li>
-            
-              <li>
-                <a href="mailto:<your-email-address>">
-                  
-                  Email
-                  
-                </a>
-              </li>
-            
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
-
-<article>
-  <div class="container typo">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div class="post-info text-muted">
-          
-            <!-- Author -->
-            <span class="author info">By John Doe</span>
-          
-          <!-- Date -->
-          <span class="date-time info">On
-            <span class="date">2020-10-10</span>
-            <span class="time">23:56:40</span>
-          </span>
-          
-        </div>
-        <!-- Tags -->
-        
-        <!-- Post Main Content -->
-        <div class="post-content">
-          
-        </div>
-      </div>
-    </div>
-  </div>
-</article>
-
-
-
-    <!-- Footer -->
-<footer>
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <p class="copyright text-muted">
-          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
-          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
-        <p class="copyright text-muted">
-          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
-        </p>
-      </div>
-    </div>
-  </div>
-</footer>
-
-
-    <!-- After Footer Scripts -->
-
-<script src="/js/highlight.pack.js"></script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function(event) {
-    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
-    codeBlocks.forEach(function(block, index) {
-      hljs.highlightBlock(block);
-    });
-  });
-</script>
-
-  </body>
-</html>
-
+block content
+    article#post
+        .post-header
+            .title= page.title
+            .container
+                time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.posted')] #[=date(page['date'], config.date_format)] | #[=__('post.modified')] #[=date(page['updated'], config.date_format)]
+                //time.button-hover.post-date #[i.fas.fa-calendar-alt.article-icon(aria-hidden="true")] #[=__('post.modified')] #[=date(page['updated'], config.date_format)]
+                .button-hover.categories
+                    each categories,index in page.categories.data
+                        i.fa.fa-inbox.article-icon(aria-hidden="true")
+                        a.link-a(href=url_for(categories.path)) #[=categories.name]
+                        if(index < page.categories.data.length - 1)
+                            i.fa.fa-angle-right(style="margin: 0 8px;")
+                .button-hover.tags
+                    each tags,index in page.tags.data
+                        i.fa.fa-tag.article-icon(aria-hidden="true")
+                        a.link-a(href=url_for(tags.path)) #[=tags.name]
+                        if(index < page.tags.data.length - 1)
+                            span &nbsp;|&nbsp;
+        .main-content!= page.content
+        if (theme.post_copyright && theme.post_copyright.enable)
+            .post-copyright
+                .post-copyright-author
+                    span.post-copyright-meta= _p('post.copyright.author') + ": "
+                    span.post-copyright-info
+                        - let mailto = `mailto:${config.email}`
+                        a(href=mailto) #[=config.author]
+                .post-copyright-type
+                    span.post-copyright-meta= _p('post.copyright.link') + ": "
+                    span.post-copyright-info
+                        a(href=url_for(page.permalink)) #[=page.permalink]
+                .post-copyright-notice
+                    span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+                    span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
+        if (theme.comments.enable)
+            include ./includes/comments/index.pug
+    include includes/pagination.pug
+    //div!= paginator()
